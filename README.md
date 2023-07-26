@@ -1,4 +1,7 @@
 ﻿# JobSearcher
+There are **2** crawler methods
+1. **Synchronous processing**
+2. **Asynchronous processing**
 
 ## Motivation
 * **104** is one of the most commonly used job search websites in Taiwan, but there are lots of job hunting information.
