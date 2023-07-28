@@ -60,6 +60,15 @@ For example, salary distribution, what are the mainstream skills in the market, 
     current_date = datetime.now().date()
     clean_df.to_csv(f"JBLIST_{current_date}.csv", sep='|', index=False)
     ```
+## Demo EDA
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/d68d5f03-5337-4885-8424-7ab91b792e1a)
+
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/84c3f477-d46f-4cdc-a0b2-32e04f79a0c9)
+
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/0edc96a1-0a48-43f9-81f6-a3a281b92fff)
+
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/5c3958ba-58f1-45d3-9a7f-fcc9f3fb4171)
+
 
 ## Environments and Moduels (2023/07)
 1. Python 3.11.2
