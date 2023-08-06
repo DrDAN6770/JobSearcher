@@ -1,4 +1,6 @@
 ﻿# JobSearcher
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/abb60010-c77d-4deb-a9a2-d33e96125001)
+
 There are **2** crawler methods
 1. **Synchronous processing**
 2. **Asynchronous processing**
