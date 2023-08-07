@@ -5,6 +5,10 @@ There are **2** crawler methods
 1. **Synchronous processing**
 2. **Asynchronous processing**
 
+There are **2** Data Storage methods
+1. **SQLite**
+2. **MongoDB**
+
 ## Motivation
 * **104** is one of the most commonly used job search websites in Taiwan, but there are lots of job hunting information.
 Is there a way to quickly search and filter the information?
@@ -12,7 +16,7 @@ Is there a way to quickly search and filter the information?
 * Or look at the current job market situation from an overall perspective
 For example, salary distribution, what are the mainstream skills in the market, what industries are very hot, etc.
 
-* Build a **data pipeline** through **regular web crawler** search and storage and continuous updating
+* Build a **Data pipeline** through **regular web crawler** search, **storage** and continuous updating
 
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/3a2ffa50-6405-4183-a88c-73d1944d4ab6)
 
@@ -80,4 +84,3 @@ For example, salary distribution, what are the mainstream skills in the market, 
 5. beautifulsoup 4.12.2
 6. aiohttp 3.8.5
 7. re, time, random, datetime, asyncio
-
