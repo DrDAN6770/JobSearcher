@@ -1,5 +1,5 @@
 ﻿# JobSearcher
-![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/abb60010-c77d-4deb-a9a2-d33e96125001)
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/facb785f-d63c-41f9-8933-cebf22bfba28)
 
 There are some special methods:
 1. **Crawler**
