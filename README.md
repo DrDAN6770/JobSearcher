@@ -1,13 +1,15 @@
 ﻿# JobSearcher
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/abb60010-c77d-4deb-a9a2-d33e96125001)
 
-There are **2** crawler methods
-1. **Synchronous processing**
-2. **Asynchronous processing**
+There are some special methods:
+1. **Crawler**
+    Use **`Asynchronous operation`** instead of **`Synchronous operation`** to significantly speed up the execution speed (about **`95%`** reduction in operating time for the amount of data updated in a week, `4 hours to 10 mins`)
+    
+2. **Storage**
+    Store data through `MongoDB` and `SQLite`, the former saves more space and is more efficient than the latter
 
-There are **2** Data Storage methods
-1. **SQLite**
-2. **MongoDB**
+3. **Automation**
+    Use **`Airflow`** on **`Docker`**, and regularly collect data to build the **Data Pipeline**
 
 ## Motivation
 * **104** is one of the most commonly used job search websites in Taiwan, but there are lots of job hunting information.
