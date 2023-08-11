@@ -3,12 +3,15 @@
 
 There are some special methods:
 1. **Crawler**
+
     Use **`Asynchronous operation`** instead of **`Synchronous operation`** to significantly speed up the execution speed (about **`95%`** reduction in operating time for the amount of data updated in a week, `4 hours to 10 mins`)
     
 2. **Storage**
+
     Store data through `MongoDB` and `SQLite`, the former saves more space and is more efficient than the latter
 
 3. **Automation**
+
     Use **`Airflow`** on **`Docker`**, and regularly collect data to build the **Data Pipeline**
 
 ## Motivation
