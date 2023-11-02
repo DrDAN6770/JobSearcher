@@ -1,5 +1,8 @@
 ﻿# JobSearcher
-![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/facb785f-d63c-41f9-8933-cebf22bfba28)
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/822dd064-62b9-4bfb-8389-6b915e8003e0)
+
+# ERD
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/51b39d52-495b-43f4-b238-6151d458fa04)
 
 There are some special methods:
 1. **Crawler**
@@ -8,7 +11,7 @@ There are some special methods:
     
 2. **Storage**
 
-    Store data through `MongoDB` and `SQLite`, the former saves more space and is more efficient than the latter
+    Store data through `MongoDB` for `Data Lake` and `SQLite` for `Data Warehouse` 
 
 3. **Automation**
 
@@ -71,6 +74,23 @@ For example, salary distribution, what are the mainstream skills in the market, 
     current_date = datetime.now().date()
     clean_df.to_csv(f"JBLIST_{current_date}.csv", sep='|', index=False)
     ```
+4. Save to Data Lake:
+    ```
+    file_name = 'JBLIST_2023-11-03.csv'
+    df = pd.read_csv(f'../output/{file_name}')
+    Load = dataToLake('jobdata')
+    Load.NoSQL_replace_data(df)
+    ```
+5. Save to Data Warehouse:
+    ```
+    ETL = dataToWarehouse('JobsInfo')
+    df = ETL.main()
+    if df.isnull().sum().sum() == 0:
+        ETL.Load(df)
+    else:
+        print("Something wrong")
+    ```
+
 ## Demo EDA
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/d68d5f03-5337-4885-8424-7ab91b792e1a)
 
