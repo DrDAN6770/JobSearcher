@@ -72,34 +72,49 @@ For example, salary distribution, what are the mainstream skills in the market, 
 3. Save to csv file:
     ```
     current_date = datetime.now().date()
-    clean_df.to_csv(f"JBLIST_{current_date}.csv", sep='|', index=False)
+    clean_df.to_csv(f"JBLIST_{current_date}.csv", sep=',', index=False)
     ```
 4. Save to Data Lake:
     ```
-    file_name = 'JBLIST_2023-11-03.csv'
-    df = pd.read_csv(f'../output/{file_name}')
-    Load = dataToLake('jobdata')
-    Load.NoSQL_replace_data(df)
+    def DataToLake_main():
+        # Load csv (通常一次一個, 每次search完匯入SQL)
+        current_date = datetime.now().date()
+        file_name = f"JBLIST_{current_date}.csv"
+        df = pd.read_csv(f'../output/{file_name}')
+    
+        # check
+        while df.isnull().sum().sum() != 0:
+            number = df.isnull().sum().sum()
+            print(f"NaN exist {number}")
+            if number >= 10:
+                print("manual handle")
+                df[df.isnull().any(axis=1)]
+                return
+            else:
+                df = df.dropna()
+                print("Auto handle")
+        
+        Load = dataToLake('jobdata')
+        Load.NoSQL_replace_data(df)
+        print("Data to Lake Done!")
     ```
 5. Save to Data Warehouse:
     ```
-    ETL = dataToWarehouse('JobsInfo')
-    df = ETL.main()
-    if df.isnull().sum().sum() == 0:
-        ETL.Load(df)
-    else:
-        print("Something wrong")
+    def DataToWarehouse_main():
+        ETL = dataToWarehouse('JobsInfo')
+        df = ETL.process()
+        if df.isnull().sum().sum() == 0:
+            ETL.Load(df)
+        else:
+            print("Something wrong, please check!")
     ```
 
 ## Demo EDA
-![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/d68d5f03-5337-4885-8424-7ab91b792e1a)
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/aa453aaa-6f09-43fb-9899-97c108d58178)
+
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/770a6ece-e02d-4b91-bdd6-f666022364a0)
 
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/05fcbebb-79b0-450d-957e-4a8b7fea3268)
-
-![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/0edc96a1-0a48-43f9-81f6-a3a281b92fff)
-
-![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/5c3958ba-58f1-45d3-9a7f-fcc9f3fb4171)
-
 
 ## Environments and Moduels (2023/07)
 1. Python 3.11.2
