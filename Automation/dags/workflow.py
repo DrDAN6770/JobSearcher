@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from datetime import datetime
+from datetime import datetime, timedelta
 from checkNewdata import checknewdata
 from DataToLake import DataToLake_main
 from DataToWarehouse import DataToWarehouse_main
@@ -17,7 +17,7 @@ with DAG(
         # 'retry_delay': timedelta(minutes=5), #每次重試中間的間隔
     },
     description='ETL process',
-    schedule_interval= None , #'*/3 * * * *', #timedelta(days=1),
+    schedule_interval= timedelta(days=7) , #'*/3 * * * *', #timedelta(days=7), None
     start_date=datetime(2023, 1, 1),
     catchup=False,
     tags=['af_etl_dag'],

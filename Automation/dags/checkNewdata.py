@@ -3,7 +3,7 @@ import pandas as pd
 
 def checknewdata() -> str:
     current_date = datetime.now().date() + timedelta(days=1)
-    count = 30
+    count = 7
 
     while count != 0:
         try:
