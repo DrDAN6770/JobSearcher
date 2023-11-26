@@ -4,6 +4,9 @@
 # ERD
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/51b39d52-495b-43f4-b238-6151d458fa04)
 
+# Airflow
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/77c7aa8a-e1fd-4d68-b46d-5486c2332ff7)
+
 There are some special methods:
 1. **Crawler**
 
