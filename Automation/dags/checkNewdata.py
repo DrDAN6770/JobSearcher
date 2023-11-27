@@ -1,18 +1,11 @@
-from datetime import datetime, timedelta
-import pandas as pd
+from processedfile import processedfile_main
 
-def checknewdata() -> str:
-    current_date = datetime.now().date() + timedelta(days=1)
-    count = 7
+def checknewdata() -> list:
+    NeedToDo = processedfile_main()
+    if NeedToDo:
+        print(f'{"==" * 30}There are new data!{"==" * 30}')
+        return NeedToDo
+    else:
+        print(f'{"==" * 30}No new data!{"==" * 30}')
 
-    while count != 0:
-        try:
-            file_name = f"JBLIST_{current_date}.csv"
-            df = pd.read_csv(f'output/{file_name}')
-            print(f"There're new data")
-            return f'output/{file_name}'
-        except:
-            current_date -= timedelta(days=1)
-            count -= 1
-    print('No new data')
-    return 
+checknewdata()

@@ -236,9 +236,9 @@ def DataToWarehouse_main(**kwargs):
         if df.isnull().sum().sum() == 0:
             ETL.Load(df)
         else:
-            print("Something wrong, please check!")
+            print(f'{"==" * 50}Something wrong, please check!!{"==" * 50}')
     else:
-        print("no Data need to load")
+        print(f'{"==" * 50}No Data need to load!{"==" * 50}')
         
 if __name__ == "__main__":
     DataToWarehouse_main()

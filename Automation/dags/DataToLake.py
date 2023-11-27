@@ -3,7 +3,7 @@ import pymongo
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
-from checkNewdata import checknewdata
+from processedfile import save_processed_file
 
 class dataToLake():
     def __init__(self, collectionname = None):
@@ -42,32 +42,32 @@ class dataToLake():
 
 def DataToLake_main(**kwargs):
     ti = kwargs['ti']
-    path = ti.xcom_pull(task_ids='CheckNewData')
-    if path:
-        df = pd.read_csv(path)
-
-    # check
-    try:
-        while df.isnull().sum().sum() != 0:
-            number = df.isnull().sum().sum()
-            print(f"NaN exist {number}")
-            if number >= 10:
-                print("manual handle")
-                df[df.isnull().any(axis=1)]
-                return
-            else:
-                df = df.dropna()
-                print("Auto handle")
-        
-        Load = dataToLake('jobdata')
-        Load.NoSQL_replace_data(df)
-        print("Data to Lake Done!")
-    except NameError:
-        print("no Data need to load")
+    NeeToDo = ti.xcom_pull(task_ids='CheckNewData')
+    if not NeeToDo:
+        print(f'{"==" * 30}No Data need to load!{"==" * 30}')
         return
-    except Exception as e:
-        print(e)
-        return
-
+    for file_name in NeeToDo:
+        df = pd.read_csv(f'output/{file_name}')
+        # check
+        try:
+            while df.isnull().sum().sum() != 0:
+                number = df.isnull().sum().sum()
+                print(f"NaN exist {number}")
+                if number >= 10:
+                    print(f'{"==" * 30}manual handle {file_name} {"==" * 30}')
+                    df[df.isnull().any(axis=1)]
+                    return 
+                else:
+                    df = df.dropna()
+                    print("Auto handle")
+            
+            Load = dataToLake('jobdata')
+            Load.NoSQL_replace_data(df)
+            print(f'{"==" * 30}{file_name} to Lake Done!{"==" * 30}')
+            save_processed_file(file_name)
+        except Exception as e:
+            print(e)
+            return
+    
 if __name__ == "__main__":    
     DataToLake_main()
