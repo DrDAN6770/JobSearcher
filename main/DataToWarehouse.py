@@ -1,6 +1,7 @@
 import pandas as pd
 import pymongo
 import sqlite3
+from datetime import datetime
 
 
 class dataToWarehouse():
@@ -59,11 +60,19 @@ class dataToWarehouse():
         client = pymongo.MongoClient("mongodb://localhost:27017/")
         db = client["JobDB"]
         collection = db["jobdata"]
-        data_list = list(collection.find())
-        df = pd.DataFrame(data_list)
-        df = df.drop("_id", axis = 1)
-        return df
-        
+        latest_date_record = collection.find_one(
+            filter={},
+            sort=[("搜集資料日期", -1)],  # 按照 "搜集資料日期" 字段降序排序
+            projection={"_id": 0, "搜集資料日期": 1}  # 只返回 "搜集資料日期" 字段，不返回 "_id" 字段
+        )
+        print(latest_date_record)
+        data_list = list(collection.find({"搜集資料日期": {"$gte": latest_date_record["搜集資料日期"]}}))
+        if data_list:
+            df = pd.DataFrame(data_list)
+            df = df.drop(["_id", "搜集資料日期"], axis = 1)
+            return df
+        return pd.DataFrame()
+    
     def TranslateData(self, df : pd.DataFrame, x : str, DimensionTable : str, col_name : str) -> pd.DataFrame:
         conn = sqlite3.connect(self.SQL_DB)
         query = f"SELECT * FROM {DimensionTable}"
@@ -121,21 +130,25 @@ class dataToWarehouse():
                             '其他要求', '連結']
 
         df = self.LoadFromLake()
-        df = df[new_columns_order]
-        df = self.translation_businesstrip(df)
-        df = self.translation_degree(df)
-        df = self.translation_category(df)
-        df = self.translation_department(df)
 
-        keys = [('可上班日', 'AvailableStartdate', 'AvailableType'), ('出差外派', 'Business_trip', 'type'),
-                ('縣市', 'City', 'city'), ('學歷要求', 'Degree', 'degree'), ('職務類別', 'JobCategory', 'category'),
-                ('休假制度', 'HolidaySystem', 'Holiday_type'), ('工作性質', 'JobType', 'type'), ('科系要求', 'Department', 'department'),
-                ('管理責任', 'ManagementResponsibility', 'management'), ('工作經歷', 'WorkingEXP', 'yearexp')]
+        if not df.empty:
+            df = df[new_columns_order]
+            df = self.translation_businesstrip(df)
+            df = self.translation_degree(df)
+            df = self.translation_category(df)
+            df = self.translation_department(df)
 
-        for X, DimensionTable, col_name in keys:
-            df = self.TranslateData(df, X, DimensionTable, col_name)
+            keys = [('可上班日', 'AvailableStartdate', 'AvailableType'), ('出差外派', 'Business_trip', 'type'),
+                    ('縣市', 'City', 'city'), ('學歷要求', 'Degree', 'degree'), ('職務類別', 'JobCategory', 'category'),
+                    ('休假制度', 'HolidaySystem', 'Holiday_type'), ('工作性質', 'JobType', 'type'), ('科系要求', 'Department', 'department'),
+                    ('管理責任', 'ManagementResponsibility', 'management'), ('工作經歷', 'WorkingEXP', 'yearexp')]
 
-        return df
+            for X, DimensionTable, col_name in keys:
+                df = self.TranslateData(df, X, DimensionTable, col_name)
+
+            return df
+        return pd.DataFrame()
+    
     def Load(self, df):
         new_count = 0
         updates_count = 0
@@ -161,13 +174,16 @@ class dataToWarehouse():
         print(f"ETL Done!\nTotal {len(df)}, update {updates_count}, add {new_count}")
         return 0
 
-def DataToWarehouse_main():
+def DataToWarehouse_main() -> None:
     ETL = dataToWarehouse('JobsInfo')
     df = ETL.process()
-    if df.isnull().sum().sum() == 0:
-        ETL.Load(df)
+    if not df.empty:
+        if df.isnull().sum().sum() == 0:
+            ETL.Load(df)
+        else:
+            print("Something wrong, please check!")
     else:
-        print("Something wrong, please check!")
+        print(f"{'='*30}No new data{'='*30}")
         
 if __name__ == "__main__":
     DataToWarehouse_main()

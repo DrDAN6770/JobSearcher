@@ -78,10 +78,18 @@ class dataToWarehouse():
         client = pymongo.MongoClient(f'mongodb://{self.mongodb_user}:{self.mongodb_password}@mongodb:{self.mongodb_port}/')
         db = client["JobDB"]
         collection = db["jobdata"]
-        data_list = list(collection.find())
-        df = pd.DataFrame(data_list)
-        df = df.drop("_id", axis = 1)
-        return df
+        latest_date_record = collection.find_one(
+            filter={},
+            sort=[("搜集資料日期", -1)],  # 按照 "搜集資料日期" 字段降序排序
+            projection={"_id": 0, "搜集資料日期": 1}  # 只返回 "搜集資料日期" 字段，不返回 "_id" 字段
+        )
+        print(f'上次更新日期 : {latest_date_record["搜集資料日期"]}')
+        data_list = list(collection.find({"搜集資料日期": {"$gte": latest_date_record["搜集資料日期"]}}))
+        if data_list:
+            df = pd.DataFrame(data_list)
+            df = df.drop(["_id", "搜集資料日期"], axis = 1)
+            return df
+        return pd.DataFrame()
 
     def Dateformat(self, df : pd.DataFrame) -> pd.DataFrame:
         current_year = datetime.now().year
@@ -152,22 +160,25 @@ class dataToWarehouse():
                             '其他要求', '連結']
 
         df = self.LoadFromLake()
-        df = self.Dateformat(df)
-        df = df[new_columns_order]
-        df = self.translation_businesstrip(df)
-        df = self.translation_degree(df)
-        df = self.translation_category(df)
-        df = self.translation_department(df)
+        if not df.empty:
+            df = self.Dateformat(df)
+            df = df[new_columns_order]
+            df = self.translation_businesstrip(df)
+            df = self.translation_degree(df)
+            df = self.translation_category(df)
+            df = self.translation_department(df)
 
-        keys = [('可上班日', 'AvailableStartdate', 'AvailableType'), ('出差外派', 'Business_trip', 'type'),
-                ('縣市', 'City', 'city'), ('學歷要求', 'Degree', 'degree'), ('職務類別', 'JobCategory', 'category'),
-                ('休假制度', 'HolidaySystem', 'Holiday_type'), ('工作性質', 'JobType', 'type'), ('科系要求', 'Department', 'department'),
-                ('管理責任', 'ManagementResponsibility', 'management'), ('工作經歷', 'WorkingEXP', 'yearexp')]
+            keys = [('可上班日', 'AvailableStartdate', 'AvailableType'), ('出差外派', 'Business_trip', 'type'),
+                    ('縣市', 'City', 'city'), ('學歷要求', 'Degree', 'degree'), ('職務類別', 'JobCategory', 'category'),
+                    ('休假制度', 'HolidaySystem', 'Holiday_type'), ('工作性質', 'JobType', 'type'), ('科系要求', 'Department', 'department'),
+                    ('管理責任', 'ManagementResponsibility', 'management'), ('工作經歷', 'WorkingEXP', 'yearexp')]
 
-        for X, DimensionTable, col_name in keys:
-            df = self.TranslateData(df, X, DimensionTable, col_name)
+            for X, DimensionTable, col_name in keys:
+                df = self.TranslateData(df, X, DimensionTable, col_name)
 
-        return df
+            return df
+        return pd.DataFrame()
+    
     def Load(self, df):
         new_count = 0
         updates_count = 0
@@ -217,8 +228,8 @@ class dataToWarehouse():
                     connection.execute(stmt)
                 updates_count += 1
             except Exception as e:
-                print(i)
-                print(row['連結'])
+                print('=' * 100)
+                print(i, row['連結'])
                 print(e)
                 print('=' * 100)
             
@@ -233,12 +244,15 @@ def DataToWarehouse_main(**kwargs):
     if path:
         ETL = dataToWarehouse('JobsInfo')
         df = ETL.process()
-        if df.isnull().sum().sum() == 0:
-            ETL.Load(df)
+        if not df.empty:
+            if df.isnull().sum().sum() == 0:
+                ETL.Load(df)
+            else:
+                print(f'{"=" * 50}Something wrong, please check!!{"=" * 50}')
         else:
-            print(f'{"==" * 50}Something wrong, please check!!{"==" * 50}')
+            print(f"{'=' *50}No Data need to load!{'=' *50}")
     else:
-        print(f'{"==" * 50}No Data need to load!{"==" * 50}')
+        print(f'{"=" * 50}No Data need to load!{"=" * 50}')
         
 if __name__ == "__main__":
     DataToWarehouse_main()

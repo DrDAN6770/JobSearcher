@@ -1,6 +1,6 @@
 import pandas as pd
 import pymongo
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 from dotenv import load_dotenv
 from processedfile import save_processed_file
@@ -22,7 +22,9 @@ class dataToLake():
         db = client[self.NoSQL_DB]
         collection = db[self.collectionname]
         new_count, update_count = 0, 0
+        current_date = datetime.now().date()
         for df in args:
+            df['搜集資料日期'] = current_date.strftime('%Y-%m-%d')
             data = df.to_dict(orient="records")
             for idx, record in enumerate(data):
                 try:
