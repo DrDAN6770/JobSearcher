@@ -14,7 +14,7 @@ There are some special methods:
     
 2. **Storage**
 
-    Store data through `MongoDB` for `Data Lake` and `SQLite` for `Data Warehouse` 
+    Store data through **`MongoDB`** for `Data Lake` and **`MySQL`** for `Data Warehouse` both builded by **`Docker`** 
 
 3. **Automation**
 
@@ -118,12 +118,3 @@ For example, salary distribution, what are the mainstream skills in the market, 
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/770a6ece-e02d-4b91-bdd6-f666022364a0)
 
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/05fcbebb-79b0-450d-957e-4a8b7fea3268)
-
-## Environments and Moduels (2023/07)
-1. Python 3.11.2
-2. request 2.31.0
-3. pandas 2.0.1
-4. selenium 4.10.0
-5. beautifulsoup 4.12.2
-6. aiohttp 3.8.5
-7. re, time, random, datetime, asyncio
