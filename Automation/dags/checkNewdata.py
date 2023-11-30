@@ -7,5 +7,3 @@ def checknewdata() -> list:
         return NeedToDo
     else:
         print(f'{"=" * 50}No new data!{"=" * 50}')
-
-checknewdata()

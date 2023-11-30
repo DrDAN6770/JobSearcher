@@ -5,18 +5,22 @@
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/51b39d52-495b-43f4-b238-6151d458fa04)
 
 # Airflow
-![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/77c7aa8a-e1fd-4d68-b46d-5486c2332ff7)
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/b5418b66-6f1e-462d-8572-fa928055c588)
 
 There are some special methods:
+1. **Container**
+   
+   All services built by **`Docker`**, including `MySQL`, `MongoDB`, `Crawler(selenium)`, `Airflow`, are easy to deploy by yaml
+   
 1. **Crawler**
 
-    Use **`Asynchronous operation`** instead of **`Synchronous operation`** to significantly speed up the execution speed (about **`95%`** reduction in operating time for the amount of data updated in a week, `4 hours to 10 mins`)
+   Use **`Asynchronous operation`** instead of **`Synchronous operation`** to significantly speed up the execution speed (about **`95%`** reduction in operating time for the amount of data updated in a week, `4 hours to 10 mins`) 
     
-2. **Storage**
+3. **Storage**
 
     Store data through **`MongoDB`** for `Data Lake` and **`MySQL`** for `Data Warehouse` both builded by **`Docker`** 
 
-3. **Automation**
+4. **Automation**
 
     Use **`Airflow`** on **`Docker`**, and regularly collect data to build the **Data Pipeline**
 

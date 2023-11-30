@@ -238,21 +238,22 @@ class dataToWarehouse():
         print(f"執行時間 : {end_time - start_time:.2f} 秒")
         return 0
 
-def DataToWarehouse_main(**kwargs):
-    ti = kwargs['ti']
-    path = ti.xcom_pull(task_ids='CheckNewData')
-    if path:
-        ETL = dataToWarehouse('JobsInfo')
-        df = ETL.process()
-        if not df.empty:
-            if df.isnull().sum().sum() == 0:
-                ETL.Load(df)
-            else:
-                print(f'{"=" * 50}Something wrong, please check!!{"=" * 50}')
+def DataToWarehouse_main():
+    ETL = dataToWarehouse('JobsInfo')
+    df = ETL.process()
+    if not df.empty:
+        null_count = df.isnull().sum().sum()
+        if null_count == 0:
+            ETL.Load(df)
+        elif null_count < 10:
+            df = df.dropna()
+            print(f"{'=' *50}There're some null, but less, Auto handle{'=' *50}")
+            ETL.Load(df)
         else:
-            print(f"{'=' *50}No Data need to load!{'=' *50}")
+            print(f'{"=" * 50}Something wrong, please check!!{"=" * 50}')
+            print(df.isnull().sum().sum())
     else:
-        print(f'{"=" * 50}No Data need to load!{"=" * 50}')
+        print(f"{'=' *50}No Data need to load!{'=' *50}")
         
 if __name__ == "__main__":
     DataToWarehouse_main()

@@ -20,7 +20,7 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-pymongo}
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-pymongo selenium==4.15.0}
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
@@ -36,20 +36,29 @@ x-airflow-common:
       condition: service_healthy
 
 services:
+  chrome:
+    image: selenium/standalone-chrome
+    shm_size: 2gb
+    ports:
+      - 4444:4444
+      - 7900:7900
+    environment:
+      - SE_VNC_NO_PASSWORD=1 # NO_PASSWORD
+    #   - SE_VNC_VIEW_ONLY=1   # readonly
   mysqldb:
-      image: mysql:8.0
-      # 設定 mysql 使用原生認證的密碼 hash
-      command: mysqld --default-authentication-plugin=mysql_native_password
-      ports: 
-          - 3308:3306
-      environment:
-          MYSQL_DATABASE: mydb
-          MYSQL_USER: user
-          MYSQL_PASSWORD: test
-          MYSQL_ROOT_PASSWORD: test
-      restart: always
-      volumes:
-          - mysql_data:/var/lib/mysql
+    image: mysql:8.0
+    # 設定 mysql 使用原生認證的密碼 hash
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    ports: 
+        - 3308:3306
+    environment:
+        MYSQL_DATABASE: mydb
+        MYSQL_USER: user
+        MYSQL_PASSWORD: test
+        MYSQL_ROOT_PASSWORD: test
+    restart: always
+    volumes:
+        - mysql_data:/var/lib/mysql
 
   mongodb:
     image: mongo:latest

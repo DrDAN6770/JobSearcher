@@ -44,11 +44,16 @@ class dataToLake():
 
 def DataToLake_main(**kwargs):
     ti = kwargs['ti']
-    NeeToDo = ti.xcom_pull(task_ids='CheckNewData')
-    if not NeeToDo:
+    OldToDo = ti.xcom_pull(task_ids='CheckNewData')
+    Newfile = ti.xcom_pull(task_ids='DataCollection')
+    print(OldToDo, "!" * 10)
+    print(Newfile, "!" * 10)
+    if not OldToDo and not Newfile:
         print(f'{"==" * 30}No Data need to load!{"==" * 30}')
         return
-    for file_name in NeeToDo:
+    NeedToDo = OldToDo if OldToDo else [Newfile]
+    
+    for file_name in NeedToDo:
         df = pd.read_csv(f'output/{file_name}')
         # check
         try:

@@ -1,10 +1,15 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, BranchPythonOperator
 from datetime import datetime, timedelta
+from webcrawler104_async import webcrawler_main
 from checkNewdata import checknewdata
 from DataToLake import DataToLake_main
 from DataToWarehouse import DataToWarehouse_main
-    
+
+def branch(**kwargs):
+    res = kwargs['ti'].xcom_pull(task_ids='CheckNewData')
+    return 'DataToLake' if res else 'DataCollection'
+
 
 with DAG(
     'ETL',
@@ -17,13 +22,11 @@ with DAG(
         # 'retry_delay': timedelta(minutes=5), #每次重試中間的間隔
     },
     description='ETL process',
-    schedule_interval= timedelta(days=7) , #'*/3 * * * *', #timedelta(days=7), None
+    schedule_interval= timedelta(days=3) , #'*/3 * * * *', #timedelta(days=7), None
     start_date=datetime(2023, 1, 1),
     catchup=False,
     tags=['af_etl_dag'],
 ) as dag:
-
-# Task to insert data into MongoDB
     t0 = PythonOperator(
         task_id='CheckNewData',
         python_callable=checknewdata,
@@ -31,18 +34,35 @@ with DAG(
         dag=dag,
     )
 
-    t1 = PythonOperator(
-        task_id='DataToLake',
-        python_callable=DataToLake_main,
+    branch_task = BranchPythonOperator(
+        task_id='Branch_condition',
+        python_callable=branch,
         provide_context=True,
         dag=dag,
     )
 
+    t1 = PythonOperator(
+        task_id='DataCollection',
+        python_callable=webcrawler_main,
+        dag=dag,
+    )  
+
     t2 = PythonOperator(
+        task_id='DataToLake',
+        python_callable=DataToLake_main,
+        dag=dag,
+        trigger_rule='none_failed_or_skipped'
+    )
+
+    t3 = PythonOperator(
         task_id='DataToWarehouse',
         python_callable=DataToWarehouse_main,
-        provide_context=True,
         dag=dag,
     )
-    t0 >> t1
-    t1 >> t2
+
+    # logic
+    # if t0 return true :then t0 > t2 > t3
+    # if t0 return false: then t1 > t0 > t2 > t3
+    t0 >> branch_task
+    branch_task >> t1 >> t2 >> t3
+    branch_task >> t2 >> t3
