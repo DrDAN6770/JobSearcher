@@ -17,8 +17,9 @@ There are some special methods:
    Use **`Asynchronous operation`** instead of **`Synchronous operation`** to significantly speed up the execution speed (about **`95%`** reduction in operating time for the amount of data updated in a week, `4 hours to 10 mins`) 
     
 3. **Storage**
-
-    Store data through **`MongoDB`** for `Data Lake` and **`MySQL`** for `Data Warehouse` both builded by **`Docker`** 
+    * `MongoDB` for **personal practice**. If you don't use it, you can directly load the data into MySQL. 
+    
+    * Store data through **`MongoDB`** for `Data Lake` and **`MySQL`** for `Data Warehouse` both builded by **`Docker`** 
 
 4. **Automation**
 
