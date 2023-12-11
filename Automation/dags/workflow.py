@@ -8,7 +8,21 @@ from DataToWarehouse import DataToWarehouse_main
 
 def branch(**kwargs):
     res = kwargs['ti'].xcom_pull(task_ids='CheckNewData')
-    return 'DataToLake' if res else 'DataCollection'
+
+    if not res:
+        print(f"{'=' * 50} DO 'DataCollection' task {'=' * 50}")
+        return 'DataCollection'
+    
+    elif res[0] is True:
+        print(f"{'=' * 50} Today already DONE {'=' * 50}")
+        return
+
+    else:
+        print(f"{'=' * 50} DO 'DataToLake' task {'=' * 50}")
+        return 'DataToLake'
+    
+    
+        
 
 def DataToLake_main_inDAG(**kwargs):
     ti = kwargs['ti']

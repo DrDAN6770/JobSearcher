@@ -1,9 +1,11 @@
 import os
+from datetime import datetime
 
 class processedfile():
     def __init__(self) -> None:
         self.directory = 'output'
         self.file_path = 'output/processed_files.txt'
+        self.currentdate = datetime.now().date()
 
     def find_csv_files(self):
         return [filename for filename in os.listdir(self.directory) if filename.endswith(".csv")]
@@ -22,6 +24,10 @@ class processedfile():
         for filename in csv_files:
             if filename not in visited:
                 res.append(filename)
+        
+        # 今日已搜過
+        if f"JBLIST_{self.currentdate}.csv" in visited:
+            return [True]
         return res
 
 def save_processed_file(filename, file_path='output/processed_files.txt') -> None:
