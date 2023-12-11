@@ -10,20 +10,33 @@ def branch(**kwargs):
     res = kwargs['ti'].xcom_pull(task_ids='CheckNewData')
     return 'DataToLake' if res else 'DataCollection'
 
+def DataToLake_main_inDAG(**kwargs):
+    ti = kwargs['ti']
+    OldToDo = ti.xcom_pull(task_ids='CheckNewData')
+    Newfile = ti.xcom_pull(task_ids='DataCollection')
+    print(OldToDo, "!" * 10)
+    print(Newfile, "!" * 10)
+
+    if not OldToDo and not Newfile:
+        print(f'{"==" * 30}No Data need to load!{"==" * 30}')
+        return
+
+    DataToLake_main(OldToDo, Newfile)
+
 
 with DAG(
     'ETL',
     default_args={
         'depends_on_past': False, #每一次執行的Task是否會依賴於上次執行的Task，如果是False的話，代表上次的Task如果執行失敗，這次的Task就不會繼續執行
-        # 'email': ['airflow@example.com'], #如果Task執行失敗的話，要寄信給哪些人的email
-        # 'email_on_failure': False, #如果Task執行失敗的話，是否寄信
+        # 'email': ['danny6770@gmail.com'], #如果Task執行失敗的話，要寄信給哪些人的email
+        # 'email_on_failure': True, #如果Task執行失敗的話，是否寄信
         # 'email_on_retry': False, #如果Task重試的話，是否寄信
         'retries': 1, #最多重試的次數
         # 'retry_delay': timedelta(minutes=5), #每次重試中間的間隔
     },
     description='ETL process',
-    schedule_interval= timedelta(days=3) , #'*/3 * * * *', #timedelta(days=7), None
-    start_date=datetime(2023, 1, 1),
+    schedule_interval= '0 0 * * 1,4' , #'*/3 * * * *', #timedelta(days=7), None
+    start_date=datetime(2023, 12, 1),
     catchup=False,
     tags=['af_etl_dag'],
 ) as dag:
@@ -49,7 +62,7 @@ with DAG(
 
     t2 = PythonOperator(
         task_id='DataToLake',
-        python_callable=DataToLake_main,
+        python_callable=DataToLake_main_inDAG,
         dag=dag,
         trigger_rule='none_failed_or_skipped'
     )

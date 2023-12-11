@@ -42,15 +42,7 @@ class dataToLake():
                     continue
         print(f'更新{update_count}筆, 新增{new_count}筆')
 
-def DataToLake_main(**kwargs):
-    ti = kwargs['ti']
-    OldToDo = ti.xcom_pull(task_ids='CheckNewData')
-    Newfile = ti.xcom_pull(task_ids='DataCollection')
-    print(OldToDo, "!" * 10)
-    print(Newfile, "!" * 10)
-    if not OldToDo and not Newfile:
-        print(f'{"==" * 30}No Data need to load!{"==" * 30}')
-        return
+def DataToLake_main(OldToDo = None, Newfile = None):
     NeedToDo = OldToDo if OldToDo else [Newfile]
     
     for file_name in NeedToDo:
