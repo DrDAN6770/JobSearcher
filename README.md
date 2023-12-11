@@ -7,23 +7,36 @@
 # Airflow
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/b5418b66-6f1e-462d-8572-fa928055c588)
 
-There are some special methods:
-1. **Container**
-   
-   All services built by **`Docker`**, including `MySQL`, `MongoDB`, `Crawler(selenium)`, `Airflow`, are easy to deploy by yaml
-   
-1. **Crawler**
+# Result
+**Implement pipeline, ETL, DB management and Automation, Solve the situation that originally required manually collecting data, re-analyzing, and filtering data**
 
-   Use **`Asynchronous operation`** instead of **`Synchronous operation`** to significantly speed up the execution speed (about **`95%`** reduction in operating time for the amount of data updated in a week, `4 hours to 10 mins`) 
-    
-3. **Storage**
-    * `MongoDB` for **personal practice**. If you don't use it, you can directly load the data into MySQL. 
-    
-    * Store data through **`MongoDB`** for `Data Lake` and **`MySQL`** for `Data Warehouse` both builded by **`Docker`** 
+1. **Data PipeLine**
+
+   ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/30725668-f2de-4772-9f2f-5bfcb32e5bf2)
+   
+   * `Web source Data` >> `ETL` >> `Target Data Storage` >> `Application`
+   * This project focuses on the processes before `Application`
+  
+
+2. **Storage**
+    * `MongoDB` for **personal practice**. If you don't use it, you can directly load the data into `MySQL`
+    * Store data through **`MongoDB`** for `Data Lake` and **`MySQL`** for `Data Warehouse` both built by **`Docker`**
+    * Simple **`Normalization`** processing and **`creating index`** increase query performance
+
+3. **Container**
+   
+   All services built by **`Docker`**, including `MySQL`, `MongoDB`, `Crawler(selenium)`, `Airflow`
 
 4. **Automation**
 
-    Use **`Airflow`** on **`Docker`**, and regularly collect data to build the **Data Pipeline**
+    * Use **`Airflow`** , and regularly collect data task because...
+    * Famous, Good UI, Log interface
+    * Generate an architecture diagram based on **`DAG`** to understand the entire process
+   
+5. **Crawler**
+
+   Use **`Asynchronous operation`** instead of **`Synchronous operation`** to significantly speed up the execution speed (about **`95%`** reduction in operating time for the amount of data updated in a week, `4 hours to 10 mins`) 
+    
 
 ## Motivation
 * **104** is one of the most commonly used job search websites in Taiwan, but there are lots of job hunting information.
