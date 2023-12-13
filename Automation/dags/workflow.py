@@ -49,7 +49,7 @@ with DAG(
         # 'retry_delay': timedelta(minutes=5), #每次重試中間的間隔
     },
     description='ETL process',
-    schedule_interval= '0 0 * * 1,4' , #'*/3 * * * *', #timedelta(days=7), None
+    schedule_interval= '0 16 * * 3,7' , #'*/3 * * * *', #timedelta(days=7), None
     start_date=datetime(2023, 12, 1),
     catchup=False,
     tags=['af_etl_dag'],
