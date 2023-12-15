@@ -1,0 +1,11 @@
+version: '3.0'
+services:
+  api:
+    image: myfastapi-app
+    ports:
+        - 8888:8888
+    hostname: "api"
+    restart: "no"
+    environment:
+      - TZ=Asia/Taipei
+      

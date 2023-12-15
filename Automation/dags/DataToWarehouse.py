@@ -6,12 +6,6 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, exc, update, insert, MetaData, Table
 
 class dataToWarehouse():
-    columns_num = 23
-    columns_name = '更新日期,職缺名稱,公司名稱,工作內容,職務類別,\
-                    工作待遇,工作性質,縣市,上班地點,管理責任,出差外派,\
-                    上班時段,休假制度,可上班日,需求人數,工作經歷,\
-                    學歷要求,科系要求,語文條件,擅長工具,工作技能,\
-                    其他要求,連結'
     def __init__(self, tablename = None):
         load_dotenv()
         self.mysql_user = os.getenv("mysqldb_user")
