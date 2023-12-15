@@ -7,6 +7,9 @@
 # Airflow
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/b5418b66-6f1e-462d-8572-fa928055c588)
 
+# API
+![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/4292e15a-f761-4e67-b3a0-a30a781637b9)
+
 # Result
 **Implement pipeline, ETL, DB management and Automation, Solve the situation that originally required manually collecting data, re-analyzing, and filtering data**
 
@@ -25,7 +28,7 @@
 
 3. **Container**
    
-   All services built by **`Docker`**, including `MySQL`, `MongoDB`, `Crawler(selenium)`, `Airflow`
+   All services built by **`Docker`**, including `MySQL`, `MongoDB`, `Crawler(selenium)`, `Airflow`, `FastAPI`
 
 4. **Automation**
 
@@ -35,7 +38,11 @@
    
 5. **Crawler**
 
-   Use **`Asynchronous operation`** instead of **`Synchronous operation`** to significantly speed up the execution speed (about **`95%`** reduction in operating time for the amount of data updated in a week, `4 hours to 10 mins`) 
+   Use **`Asynchronous operation`** instead of **`Synchronous operation`** to significantly speed up the execution speed (about **`95%`** reduction in operating time for the amount of data updated in a week, `4 hours to 10 mins`)
+
+6. **API**
+    * Using **`FastAPI`** get Data from Data warehouse to analysis (for **personal practice**)
+    * Also can write sql code through connected DB to get data
     
 
 ## Motivation
@@ -88,47 +95,11 @@ For example, salary distribution, what are the mainstream skills in the market, 
     Job_list = EJS.filter_job(raw_Job_list)
     result_df = EJS.main(Job_list, DF)
     ```
-    ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/6e620f1b-5837-4545-af0f-6b8cae96690d)
 
-3. Save to csv file:
-    ```
-    current_date = datetime.now().date()
-    clean_df.to_csv(f"JBLIST_{current_date}.csv", sep=',', index=False)
-    ```
-4. Save to Data Lake:
-    ```
-    def DataToLake_main():
-        # Load csv (通常一次一個, 每次search完匯入SQL)
-        current_date = datetime.now().date()
-        file_name = f"JBLIST_{current_date}.csv"
-        df = pd.read_csv(f'../output/{file_name}')
-    
-        # check
-        while df.isnull().sum().sum() != 0:
-            number = df.isnull().sum().sum()
-            print(f"NaN exist {number}")
-            if number >= 10:
-                print("manual handle")
-                df[df.isnull().any(axis=1)]
-                return
-            else:
-                df = df.dropna()
-                print("Auto handle")
-        
-        Load = dataToLake('jobdata')
-        Load.NoSQL_replace_data(df)
-        print("Data to Lake Done!")
-    ```
-5. Save to Data Warehouse:
-    ```
-    def DataToWarehouse_main():
-        ETL = dataToWarehouse('JobsInfo')
-        df = ETL.process()
-        if df.isnull().sum().sum() == 0:
-            ETL.Load(df)
-        else:
-            print("Something wrong, please check!")
-    ```
+3. Save to csv file
+4. Save to Data Lake
+5. Save to Data Warehouse
+6. Analysis Data
 
 ## Demo EDA
 ![image](https://github.com/DrDAN6770/JobSearcher/assets/118630187/aa453aaa-6f09-43fb-9899-97c108d58178)
