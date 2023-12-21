@@ -202,15 +202,16 @@ class eJob_search104():
             others = '無'
 
 
-        result = {
-            '工作經歷' : work_exp,
-            '學歷要求' : academic_require,
-            '科系要求' : department_require,
-            '語文條件' : language,
-            '擅長工具' : tool,
-            '工作技能' : working_ability,
-            '其他要求' : others
-        }
+        if JR and JRO:
+            result = {
+                '工作經歷' : work_exp,
+                '學歷要求' : academic_require,
+                '科系要求' : department_require,
+                '語文條件' : language,
+                '擅長工具' : tool,
+                '工作技能' : working_ability,
+                '其他要求' : others
+            }
         return result
     
     async def fetch(self, session, url):
