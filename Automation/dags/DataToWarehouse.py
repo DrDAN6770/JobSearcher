@@ -47,7 +47,7 @@ class dataToWarehouse():
                 `語文條件` VARCHAR(50),
                 `擅長工具` VARCHAR(500),
                 `工作技能` VARCHAR(500),
-                `其他要求` VARCHAR(500),
+                `其他要求` TEXT,
                 `連結` TEXT,
                 PRIMARY KEY (`連結`(255)),
                 FOREIGN KEY (`職務類別`) REFERENCES JobCategory(id),
@@ -86,14 +86,9 @@ class dataToWarehouse():
         return pd.DataFrame()
 
     def Dateformat(self, df : pd.DataFrame) -> pd.DataFrame:
-        current_year = datetime.now().year
-        current_date = datetime.now().date()
-        df['更新日期'] = f'{current_year}/' + df['更新日期']
         df['更新日期'] = pd.to_datetime(df['更新日期'], errors='coerce')
-        df['更新日期'] = df['更新日期'].apply(lambda x: x.replace(year=current_year - 1) if x.date() > current_date else x)
         return df
 
-        
     def TranslateData(self, df : pd.DataFrame, x : str, DimensionTable : str, col_name : str) -> pd.DataFrame:
         db_url = f"mysql+mysqlconnector://{self.mysql_user}:{self.mysql_password}@mysqldb:{self.mysql_port}/mydb"
         engine = create_engine(db_url)
@@ -164,7 +159,7 @@ class dataToWarehouse():
 
             keys = [('可上班日', 'AvailableStartdate', 'AvailableType'), ('出差外派', 'Business_trip', 'type'),
                     ('縣市', 'City', 'city'), ('學歷要求', 'Degree', 'degree'), ('職務類別', 'JobCategory', 'category'),
-                    ('休假制度', 'HolidaySystem', 'Holiday_type'), ('工作性質', 'JobType', 'type'), ('科系要求', 'Department', 'department'),
+                    ('休假制度', 'HolidaySystem', 'Holiday_type'), ('科系要求', 'Department', 'department'),
                     ('管理責任', 'ManagementResponsibility', 'management'), ('工作經歷', 'WorkingEXP', 'yearexp')]
 
             for X, DimensionTable, col_name in keys:
