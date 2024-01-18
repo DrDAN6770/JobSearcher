@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS JobsInfo  (
     `語文條件` VARCHAR(50),
     `擅長工具` VARCHAR(500),
     `工作技能` VARCHAR(500),
-    `其他要求` VARCHAR(500),
+    `其他要求` TEXT,
     `連結` TEXT,
     PRIMARY KEY (`連結`(255)),
     FOREIGN KEY (`職務類別`) REFERENCES JobCategory(id),
